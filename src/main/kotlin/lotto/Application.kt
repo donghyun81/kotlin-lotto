@@ -1,6 +1,5 @@
 package lotto
 
 fun main() {
-    lottoGame()
-
+    TODO("프로그램 구현")
 }
