@@ -10,4 +10,9 @@ class OutputView {
         println("${count}개를 구매했습니다.")
     }
 
+    fun purchaseLottoTickets(lottoTickets :List<List<Int>>) {
+        for (lottoTicket in lottoTickets) {
+            println(lottoTicket)
+        }
+    }
 }
