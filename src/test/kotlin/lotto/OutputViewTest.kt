@@ -24,9 +24,9 @@ class OutputViewTest {
         "8,8개를 구매했습니다.",
         "3,3개를 구매했습니다."
     )
-    fun `로또 구입 개수 출력 기능 테스트`(amount:Int,outputAmount:String) {
+    fun `로또 구입 개수 출력 기능 테스트`(amount:Int,outputPurchaseCount:String) {
         outputView.purchaseCount(amount)
-        Assertions.assertThat(outputStream.toString().trim()).isEqualTo(outputAmount)
+        Assertions.assertThat(outputStream.toString().trim()).isEqualTo(outputPurchaseCount)
     }
 
 }
