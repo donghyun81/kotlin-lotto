@@ -1,11 +1,19 @@
 package lotto
 
 import lotto.model.Lotto
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 
 class LottoTest {
+
+    lateinit var lotto:Lotto
+
+    @BeforeEach
+    fun setup(){
+        lotto = Lotto(listOf(1, 2, 3, 4, 5, 6,))
+    }
     @Test
     fun `로또 번호의 개수가 6개가 넘어가면 예외가 발생한다`() {
         assertThrows<IllegalArgumentException> {
