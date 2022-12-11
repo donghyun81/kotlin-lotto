@@ -27,4 +27,15 @@ class LottoTicketsTest {
     fun `구매한 로또 티켓의 개수를 구하는 기능 테스트`(price: Int, count: Int) {
         Assertions.assertThat(lottoTickets.count(price)).isEqualTo(count)
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "3,3",
+        "8,8",
+        "12,12",
+    )
+    fun `구매한 로또의 개수만큼 생성했는지 테스트`(count:Int,expectCount: Int) {
+        Assertions.assertThat(lottoTickets.getLottoTickets(count).size).isEqualTo(expectCount)
+    }
+
 }
