@@ -15,4 +15,8 @@ class OutputView {
             println(lottoTicket)
         }
     }
+
+    fun guideWinNumbers() {
+        println("당첨 번호를 입력해 주세요.")
+    }
 }
