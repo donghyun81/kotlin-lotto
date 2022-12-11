@@ -1,6 +1,7 @@
 package lotto
 
 import lotto.model.Lotto
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -29,5 +30,8 @@ class LottoTest {
         }
     }
 
-    // 아래에 추가 테스트 작성 가능
+    @Test
+    fun `당첨 번호와 몇개가 일치하는지 구하는 기능 테스트`() {
+        Assertions.assertThat(lotto.matches(Lotto(listOf(1,2,3,4,5,8)))).isEqualTo(5)
+    }
 }
