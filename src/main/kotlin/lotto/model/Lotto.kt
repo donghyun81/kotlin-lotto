@@ -6,6 +6,7 @@ class Lotto(private val numbers: List<Int>) {
     }
 
     fun numbers() = numbers
-    fun matches(win: Lotto) = numbers.intersect(win.numbers.toSet()).count()
+
+    fun matches(winning: Lotto) = numbers.intersect(winning.numbers.toSet()).count()
 
 }
