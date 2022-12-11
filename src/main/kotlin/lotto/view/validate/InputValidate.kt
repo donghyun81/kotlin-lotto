@@ -24,7 +24,6 @@ class InputValidate {
     companion object {
         const val PURCHASE_AMOUNT_FORM = "^[0-9]*\$"
         const val WINNING_NUMBER_FORM = "^[1-45]\$"
-
     }
 
 }
