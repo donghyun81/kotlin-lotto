@@ -17,6 +17,10 @@ class InputValidate {
         require(winningNumbers.distinct().size == 6)
     }
 
+    fun bonusWinningNumberForm(input: String) {
+        require(WINNING_NUMBER_FORM.toRegex().matches(input))
+    }
+
     companion object {
         const val PURCHASE_AMOUNT_FORM = "^[0-9]*\$"
         const val WINNING_NUMBER_FORM = "^[1-45]\$"

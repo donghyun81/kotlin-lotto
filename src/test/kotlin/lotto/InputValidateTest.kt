@@ -36,7 +36,7 @@ class InputValidateTest {
     @ValueSource(strings = ["0","a","46","4.5"])
     fun `보너스 번호 입력 형식 테스트` (input:String){
         assertThrows<IllegalArgumentException>() {
-            inputValidate.bonusNumberForm(input)
+            inputValidate.bonusWinningNumberForm(input)
         }
     }
 
