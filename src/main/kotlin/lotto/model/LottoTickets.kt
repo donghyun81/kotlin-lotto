@@ -4,7 +4,7 @@ import camp.nextstep.edu.missionutils.Randoms
 
 class LottoTickets {
 
-    fun count(price: Int) = price.div(1000)
+    fun count(amount: Int) = amount.div(1000)
 
     fun getLottoTickets(count: Int): List<Lotto> {
         val lottoTickets = mutableListOf<Lotto>()

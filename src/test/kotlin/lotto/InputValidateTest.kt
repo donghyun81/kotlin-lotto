@@ -17,11 +17,20 @@ class InputValidateTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = ["3001","0","3000a"])
+    fun `구매 금액 입력 형식 테스트` (input:String){
+        assertThrows<IllegalArgumentException>() {
+            inputValidate.purchaseAmount(input)
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = ["1,2,4,5,6","1,56,12,34,55,0","1,2,3,4,5,f","1,2,3,,4,5,6"])
     fun `당첨 번호 입력 형식 테스트` (input:String){
         assertThrows<IllegalArgumentException>() {
             inputValidate.winningNumbersForm(input)
         }
     }
+
 
 }
