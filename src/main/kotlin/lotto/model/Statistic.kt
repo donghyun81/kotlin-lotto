@@ -17,4 +17,5 @@ class Statistic(
         return lottoStatistic
     }
 
+
 }
