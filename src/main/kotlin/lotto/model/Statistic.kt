@@ -27,5 +27,12 @@ class Statistic(
         }
         return revenue
     }
+    fun rateOfTotalRevenue(amount:Int) :String {
+        var rateOfRevenue = 0F
+        winning().mapKeys { rank ->
+            rateOfRevenue += getRevenue(rank.key) * rank.value
+        }
+        return String.format("%.1f%%", rateOfRevenue / amount.toFloat() * 100)
+    }
 
 }
