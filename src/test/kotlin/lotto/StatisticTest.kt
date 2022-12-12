@@ -1,16 +1,12 @@
 package lotto
 
 import lotto.model.Lotto
-import lotto.model.LottoTickets
 import lotto.model.Statistic
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
+
 
 class StatisticTest {
     lateinit var statistic: Statistic
