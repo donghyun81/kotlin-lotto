@@ -17,5 +17,15 @@ class Statistic(
         return lottoStatistic
     }
 
+    fun getRevenue(rank: Pair<Int, Boolean>): Int {
+        var revenue = 0
+        when (rank.first) {
+            6 -> revenue += 2_000_000_000
+            5 -> revenue += if (rank.second) 30_000_000 else 1_500_000
+            4 -> revenue += 50_000
+            3 -> revenue += 5_000
+        }
+        return revenue
+    }
 
 }
