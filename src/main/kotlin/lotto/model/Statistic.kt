@@ -6,6 +6,10 @@ class Statistic(
     private val bonusWinningNumber: Int
 ) {
 
+    fun getRank(lotto:Lotto) : Pair<Int,Boolean> {
+        return Pair(lotto.matches(Lotto(winningNumbers)),lotto.numbers().contains(bonusWinningNumber))
+    }
+
     fun winning(): MutableMap<Pair<Int, Boolean>, Int> {
         val lottoStatistic = mutableMapOf<Pair<Int, Boolean>, Int>()
         lottoTickets.map { lottoTicket ->
