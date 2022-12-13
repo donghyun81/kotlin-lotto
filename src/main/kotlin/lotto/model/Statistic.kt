@@ -13,10 +13,8 @@ class Statistic(
     fun winning(): MutableMap<Pair<Int, Boolean>, Int> {
         val lottoStatistic = mutableMapOf<Pair<Int, Boolean>, Int>()
         lottoTickets.map { lottoTicket ->
-            val matchCount = lottoTicket.matches(Lotto(winningNumbers))
-            val containsBonus = lottoTicket.numbers().contains(bonusWinningNumber)
-            lottoStatistic[Pair(matchCount, containsBonus)] =
-                lottoStatistic.getOrDefault(Pair(matchCount, containsBonus), 0).plus(1)
+            lottoStatistic[getRank(lottoTicket)] =
+                lottoStatistic.getOrDefault(getRank(lottoTicket), 0).plus(1)
         }
         return lottoStatistic
     }
@@ -24,10 +22,10 @@ class Statistic(
     fun getRevenue(rank: Pair<Int, Boolean>): Int {
         var revenue = 0
         when (rank.first) {
-            6 -> revenue += 2_000_000_000
-            5 -> revenue += if (rank.second) 30_000_000 else 1_500_000
-            4 -> revenue += 50_000
-            3 -> revenue += 5_000
+            6 -> revenue = 2_000_000_000
+            5 -> revenue = if (rank.second) 30_000_000 else 1_500_000
+            4 -> revenue = 50_000
+            3 -> revenue = 5_000
         }
         return revenue
     }
