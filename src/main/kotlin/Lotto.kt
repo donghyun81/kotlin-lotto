@@ -4,4 +4,6 @@ class Lotto(val numbers: Set<LottoNumber>) {
     init {
         require(numbers.size == 6)
     }
+
+    fun contains(lottoNumber: LottoNumber) = numbers.contains(lottoNumber)
 }
