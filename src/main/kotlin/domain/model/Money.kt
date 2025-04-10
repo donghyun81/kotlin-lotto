@@ -1,6 +1,6 @@
 package domain.model
 
-import domain.exception.AmountException
+import domain.exception.MoneyException
 
 @JvmInline
 value class Money(val value: Int) {
@@ -9,7 +9,7 @@ value class Money(val value: Int) {
     }
 
     fun purchase(price: Int): Money {
-        if (value < price) throw AmountException.InvalidPurchaseException(price, value)
+        if (value < price) throw MoneyException.InvalidPurchaseException(price, value)
         return Money(value - price)
     }
 
