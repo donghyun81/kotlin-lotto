@@ -1,3 +1,6 @@
+package domain
+
+import domain.model.Money
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
