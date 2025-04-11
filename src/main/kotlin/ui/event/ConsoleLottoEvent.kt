@@ -5,7 +5,6 @@ import domain.exception.LottoException
 import domain.exception.MoneyException
 import domain.model.LottoNumber
 import domain.model.LottoNumbers
-import domain.model.LottoTicket
 import domain.model.Money
 import ui.util.Retry
 import ui.view.InputView
@@ -22,12 +21,6 @@ class ConsoleLottoEvent(
             if (purchaseAmount < minMoney) throw MoneyException.InvalidInitMoneyException(minMoney)
             Money(purchaseAmount)
         }
-
-    override fun onLottoInit(lottoTickets: List<LottoTicket>) {
-        lottoTickets.forEach { lotto ->
-            outputView.printPurchaseLottoNumbers(lotto.numbers)
-        }
-    }
 
     override fun onWinningNumbers(): LottoNumbers {
         outputView.printWinningNumbers()
