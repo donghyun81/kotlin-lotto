@@ -1,4 +1,4 @@
-package ui
+package ui.view
 
 import java.util.Scanner
 

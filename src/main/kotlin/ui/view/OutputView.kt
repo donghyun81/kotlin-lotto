@@ -1,4 +1,4 @@
-package ui
+package ui.view
 
 import common.LottoRank
 import java.math.BigDecimal
