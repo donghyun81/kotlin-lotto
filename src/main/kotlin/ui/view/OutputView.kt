@@ -1,6 +1,7 @@
 package ui.view
 
 import common.LottoRank
+import domain.model.LottoTicket
 import java.math.BigDecimal
 
 class OutputView {
@@ -11,8 +12,11 @@ class OutputView {
         println(PRINT_PURCHASE_LOTTO_COUNT_FORMAT.format(manualLottoCount, randomLottoCount))
     }
 
-    fun printPurchaseLottoNumbers(lottoNumbers: List<Int>) {
-        println(lottoNumbers.sorted())
+    fun printPurchaseLottoNumbers(lottoTickets: List<LottoTicket>) {
+        lottoTickets.forEach {
+            it.numbers
+            println(it.numbers.sorted())
+        }
     }
 
     fun printManualLottoNumbers() {
