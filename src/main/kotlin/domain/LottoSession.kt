@@ -6,13 +6,13 @@ import domain.model.LottoTicket
 import domain.model.WinningLotto
 
 class LottoSession(
-    private val lottoEvent: LottoEvent,
+    lottoEvent: LottoEvent,
 ) {
     val payMoney = lottoEvent.onInitMoney(LOTTO_PRICE)
     private var buyer: Buyer = Buyer(payMoney)
     private var winningLotto: WinningLotto? = null
 
-    fun initWinning() {
+    fun initWinning(lottoEvent: LottoEvent) {
         val winningNumbers = lottoEvent.onWinningNumbers()
         val bonusNumber = lottoEvent.onBonusNumber(winningNumbers)
         winningLotto = WinningLotto(winningNumbers, bonusNumber)
@@ -29,6 +29,7 @@ class LottoSession(
     fun purchase(
         count: Int,
         lottoMachine: LottoMachine,
+        lottoEvent: LottoEvent,
     ) {
         buyer = buyer.purchase(LOTTO_PRICE * count, lottoMachine.create())
         lottoEvent.onLottoInit(buyer.lottoTickets)

@@ -16,9 +16,10 @@ class LottoController(
     private val outputView: OutputView = OutputView(),
 ) {
     private val lottoService = LottoService()
+    private val lottoEvent = lottoEvent()
 
     fun run() {
-        val lottoSession = LottoSession(lottoEvent())
+        val lottoSession = LottoSession(lottoEvent)
         onPurchase(lottoSession)
         onWinning(lottoSession)
         onWinningResult(lottoSession)
@@ -27,11 +28,11 @@ class LottoController(
     private fun onPurchase(lottoSession: LottoSession) {
         val autoPurchaseCount = lottoSession.autoPurchaseCount()
         val randomLottoMachine = RandomLottoMachine(autoPurchaseCount)
-        lottoSession.purchase(autoPurchaseCount, randomLottoMachine)
+        lottoSession.purchase(autoPurchaseCount, randomLottoMachine, lottoEvent)
     }
 
     private fun onWinning(lottoSession: LottoSession) {
-        lottoSession.initWinning()
+        lottoSession.initWinning(lottoEvent)
     }
 
     private fun onWinningResult(lottoSession: LottoSession) {
