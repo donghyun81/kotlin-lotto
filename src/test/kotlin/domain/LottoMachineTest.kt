@@ -1,5 +1,6 @@
 package domain
 
+import domain.fake.FakeLottoMachine
 import domain.model.LottoTicket
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,9 +17,5 @@ class LottoMachineTest {
                 LottoTicket(1, 2, 3, 4, 5, 6),
             ).map { it.numbers },
         )
-    }
-
-    class FakeLottoMachine : LottoMachine {
-        override fun create(): List<LottoTicket> = listOf(LottoTicket(1, 2, 3, 4, 5, 6), LottoTicket(1, 2, 3, 4, 5, 6))
     }
 }

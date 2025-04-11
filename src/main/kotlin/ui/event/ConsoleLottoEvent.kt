@@ -7,9 +7,9 @@ import domain.model.LottoNumber
 import domain.model.LottoNumbers
 import domain.model.LottoTicket
 import domain.model.Money
-import ui.InputView
-import ui.OutputView
 import ui.util.Retry
+import ui.view.InputView
+import ui.view.OutputView
 
 class ConsoleLottoEvent(
     private val inputView: InputView,
