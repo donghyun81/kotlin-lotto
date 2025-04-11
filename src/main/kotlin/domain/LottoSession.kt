@@ -1,6 +1,7 @@
 package domain
 
 import domain.event.LottoEvent
+import domain.exception.MoneyException
 import domain.model.Buyer
 import domain.model.LottoTicket
 import domain.model.WinningLotto
@@ -26,13 +27,20 @@ class LottoSession(
 
     fun autoPurchaseCount() = buyer.purchasableCount(LOTTO_PRICE)
 
+    fun validatePurchasable(count: Int) {
+        if (!buyer.purchasable(count * LOTTO_PRICE)) {
+            throw MoneyException.InvalidPurchaseException(
+                count * LOTTO_PRICE,
+                buyer.money.value,
+            )
+        }
+    }
+
     fun purchase(
         count: Int,
         lottoMachine: LottoMachine,
-        lottoEvent: LottoEvent,
     ) {
         buyer = buyer.purchase(LOTTO_PRICE * count, lottoMachine.create())
-        lottoEvent.onLottoInit(buyer.lottoTickets)
     }
 
     companion object {

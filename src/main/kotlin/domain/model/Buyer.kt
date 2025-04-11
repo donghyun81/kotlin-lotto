@@ -10,8 +10,10 @@ class Buyer(
         price: Int,
         lottoTickets: List<LottoTicket>,
     ): Buyer {
-        return Buyer(money.purchase(price), lottoTickets + _lottoTickets)
+        return Buyer(money.purchase(price), _lottoTickets + lottoTickets)
     }
 
     fun purchasableCount(price: Int) = money.purchasableCount(price)
+
+    fun purchasable(totalPrice: Int): Boolean = money.purchasable(totalPrice)
 }

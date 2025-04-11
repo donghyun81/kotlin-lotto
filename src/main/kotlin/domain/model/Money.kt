@@ -9,9 +9,11 @@ value class Money(val value: Int) {
     }
 
     fun purchase(price: Int): Money {
-        if (value < price) throw MoneyException.InvalidPurchaseException(price, value)
+        if (!purchasable(price)) throw MoneyException.InvalidPurchaseException(price, value)
         return Money(value - price)
     }
 
     fun purchasableCount(price: Int) = value / price
+
+    fun purchasable(totalPrice: Int): Boolean = value >= totalPrice
 }
