@@ -39,8 +39,9 @@ class LottoController(
             outputView.printWinningNumberMissing()
             return
         }
-        val ranks = lottoService.ranks(lottoSession)
-        val yield = lottoService.yield(lottoSession)
+        val ranks = lottoService.ranks(lottoSession.lottoTickets(), lottoSession.winningLotto())
+        val totalPrize = lottoService.prize(lottoSession.lottoTickets(), lottoSession.winningLotto())
+        val yield = lottoService.yield(totalPrize, lottoSession.payMoney.value)
         outputView.printWinningResults(ranks.value)
         outputView.printTotalReturns(yield)
     }
