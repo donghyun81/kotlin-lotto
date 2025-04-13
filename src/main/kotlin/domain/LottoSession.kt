@@ -3,34 +3,45 @@ package domain
 import domain.event.LottoEvent
 import domain.exception.MoneyException
 import domain.model.Buyer
-import domain.model.LottoTicket
+import domain.model.Money
 import domain.model.WinningLotto
 
 class LottoSession(
-    lottoEvent: LottoEvent,
+    private val lottoEvent: LottoEvent,
+    val payMoney: Money = lottoEvent.onInitMoney(LOTTO_PRICE),
+    private val buyer: Buyer = Buyer(payMoney),
+    private val _winningLotto: WinningLotto? = null,
 ) {
-    val payMoney = lottoEvent.onInitMoney(LOTTO_PRICE)
-    private var buyer: Buyer = Buyer(payMoney)
-    private var winningLotto: WinningLotto? = null
+    val winningLotto get() = requireWinningLotto()
+    val lottoTickets get() = buyer.lottoTickets
 
-    fun initWinning(lottoEvent: LottoEvent) {
+    private fun requireWinningLotto() = checkNotNull(_winningLotto) { "당첨 번호가 초기화 되지 않았습니다." }
+
+    fun initWinning(): LottoSession {
         val winningNumbers = lottoEvent.onWinningNumbers()
         val bonusNumber = lottoEvent.onBonusNumber(winningNumbers)
-        winningLotto = WinningLotto(winningNumbers, bonusNumber)
+        val currentLottoSession = LottoSession(lottoEvent, payMoney, buyer, WinningLotto(winningNumbers, bonusNumber))
+        currentLottoSession.validateInitWinning()
+        return currentLottoSession
     }
 
-    fun isWinningReady(): Boolean = winningLotto != null
+    private fun validateInitWinning() {
+        check(isWinningReady()) { "당첨 번호가 초기화 되지 않았습니다." }
+    }
 
-    fun lottoTickets(): List<LottoTicket> = buyer.lottoTickets
+    fun isWinningReady(): Boolean = _winningLotto != null
 
-    fun winningLotto(): WinningLotto = checkNotNull(winningLotto) { "초기화되었는지 확인하고 사용" }
+    fun autoPurchaseCount(): Int = buyer.purchasableCount(LOTTO_PRICE)
 
-    fun autoPurchaseCount() = buyer.purchasableCount(LOTTO_PRICE)
+    fun requirePurchasable(count: Int) {
+        val price = count * LOTTO_PRICE
+        validatePurchasable(price)
+    }
 
-    fun validatePurchasable(count: Int) {
-        if (!buyer.purchasable(count * LOTTO_PRICE)) {
+    private fun validatePurchasable(price: Int) {
+        if (!buyer.purchasable(price)) {
             throw MoneyException.InvalidPurchaseException(
-                count * LOTTO_PRICE,
+                price,
                 buyer.money.value,
             )
         }
@@ -39,9 +50,19 @@ class LottoSession(
     fun purchase(
         count: Int,
         lottoMachine: LottoMachine,
-    ) {
-        buyer = buyer.purchase(LOTTO_PRICE * count, lottoMachine.create())
+    ): LottoSession {
+        return LottoSession(
+            lottoEvent,
+            payMoney,
+            generatePurchasedBuyer(count, lottoMachine),
+            _winningLotto,
+        )
     }
+
+    private fun generatePurchasedBuyer(
+        count: Int,
+        lottoMachine: LottoMachine,
+    ) = buyer.purchase(LOTTO_PRICE * count, lottoMachine.create())
 
     companion object {
         private const val LOTTO_PRICE = 1000
