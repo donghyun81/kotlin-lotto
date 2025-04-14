@@ -1,11 +1,11 @@
 package ui.util
 
-import ui.mapper.ErrorMessageMapper
+import ui.mapper.error.ErrorMessage
 import ui.view.OutputView
 
 class Retry(
     private val outputView: OutputView,
-    private val errorMessageMapper: ErrorMessageMapper,
+    private val errorMessage: ErrorMessage,
 ) {
     fun <T> retryEvent(event: () -> T?): T {
         while (true) {
@@ -14,10 +14,15 @@ class Retry(
                     if (result != null) return result
                     outputView.printInvalidMessage()
                 }
-                .onFailure { e ->
-                    val message = errorMessageMapper.koreanErrorMessage(e)
+                .onFailure { exception ->
+                    val message = errorMessage.create(exception)
                     outputView.printErrorMessage(message)
+                    rethrowIfUnknown(exception)
                 }
         }
+    }
+
+    private fun rethrowIfUnknown(exception: Throwable) {
+        if (exception !is IllegalArgumentException) throw exception
     }
 }
