@@ -1,25 +1,20 @@
 package ui.controller
 
 import domain.LottoSession
-import domain.ManualLottoMachine
-import domain.RandomLottoMachine
-import domain.model.LottoNumbers
+import domain.event.LottoEvent
 import domain.service.LottoService
-import ui.event.ConsoleLottoEvent
-import ui.mapper.ConsoleErrorMessage
 import ui.util.Retry
 import ui.view.InputView
 import ui.view.OutputView
 
 class LottoMain(
-    private val inputView: InputView = InputView(),
-    private val outputView: OutputView = OutputView(),
+    private val inputView: InputView,
+    private val outputView: OutputView,
+    private val retry: Retry,
+    private var lottoSession: LottoSession,
+    private val lottoEvent: LottoEvent,
+    private val lottoService: LottoService,
 ) {
-    private val lottoService = LottoService()
-    private val retry = Retry(outputView, ConsoleErrorMessage())
-    private val lottoEvent = ConsoleLottoEvent(inputView, outputView, retry)
-    private lateinit var lottoSession: LottoSession
-
     fun run() {
         lottoSession = LottoSession(lottoEvent)
         onPurchase()
@@ -29,9 +24,9 @@ class LottoMain(
 
     private fun onPurchase() {
         val manualCount = readManualLottoCount()
-        purchaseManualLottos(manualCount)
+        purchaseManualLottoTickets(manualCount)
         val autoCount = lottoSession.autoPurchaseCount()
-        purchaseAutoLottos(autoCount)
+        purchaseAutoLottoTickets(autoCount)
         printPurchaseSummary(manualCount, autoCount)
     }
 
@@ -42,18 +37,12 @@ class LottoMain(
             count
         }
 
-    private fun readManualLottoNumbers(count: Int): List<LottoNumbers> {
-        outputView.printManualLottoNumbers()
-        return List(count) { retry.retryEvent { LottoNumbers(inputView.readLottoNumbers() ?: return@retryEvent null) } }
+    private fun purchaseManualLottoTickets(manualCount: Int) {
+        lottoSession = lottoSession.purchaseManual(manualCount)
     }
 
-    private fun purchaseManualLottos(manualCount: Int) {
-        val manualLottos = readManualLottoNumbers(manualCount)
-        lottoSession = lottoSession.purchase(manualLottos.size, ManualLottoMachine(manualLottos))
-    }
-
-    private fun purchaseAutoLottos(autoCount: Int) {
-        lottoSession = lottoSession.purchase(autoCount, RandomLottoMachine(autoCount))
+    private fun purchaseAutoLottoTickets(autoCount: Int) {
+        lottoSession = lottoSession.purchaseRandom(autoCount)
     }
 
     private fun printPurchaseSummary(
@@ -65,15 +54,19 @@ class LottoMain(
     }
 
     private fun onWinningResult() {
+        ensureWinning()
+        val ranks = lottoService.ranks(lottoSession.lottoTickets, lottoSession.winningLotto)
+        val totalPrize = lottoService.prize(ranks)
+        val yield = lottoService.yield(totalPrize, lottoSession.usedMoney)
+        outputView.printWinningResults(ranks.value)
+        outputView.printTotalReturns(yield)
+    }
+
+    private fun ensureWinning() {
         if (!lottoSession.isWinningReady()) {
             outputView.printWinningNumberMissing()
             onWinning()
         }
-        val ranks = lottoService.ranks(lottoSession.lottoTickets, lottoSession.winningLotto)
-        val totalPrize = lottoService.prize(lottoSession.lottoTickets, lottoSession.winningLotto)
-        val yield = lottoService.yield(totalPrize, lottoSession.payMoney.value)
-        outputView.printWinningResults(ranks.value)
-        outputView.printTotalReturns(yield)
     }
 
     private fun onWinning() {

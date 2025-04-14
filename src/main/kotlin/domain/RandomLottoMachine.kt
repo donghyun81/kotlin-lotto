@@ -5,11 +5,13 @@ import domain.model.LottoTicket
 
 class RandomLottoMachine(private val count: Int) : LottoMachine {
     override fun create(): List<LottoTicket> {
-        return List(count) { lotto() }
+        return generateTickets()
     }
 
-    private fun lotto(): LottoTicket {
-        val lottoNumbers = randomNumbers().take(6)
+    private fun generateTickets() = List(count) { generateTicket() }
+
+    private fun generateTicket(): LottoTicket {
+        val lottoNumbers = randomNumbers().take(LOTTO_SIZE)
         return LottoTicket(LottoNumbers(lottoNumbers))
     }
 
@@ -17,5 +19,6 @@ class RandomLottoMachine(private val count: Int) : LottoMachine {
 
     companion object {
         private val LOTTO_RANGE = 1..45
+        private const val LOTTO_SIZE = 6
     }
 }

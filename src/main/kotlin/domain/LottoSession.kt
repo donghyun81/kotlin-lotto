@@ -8,25 +8,32 @@ import domain.model.WinningLotto
 
 class LottoSession(
     private val lottoEvent: LottoEvent,
-    val payMoney: Money = lottoEvent.onInitMoney(LOTTO_PRICE),
-    private val buyer: Buyer = Buyer(payMoney),
+    private val initMoney: Money = lottoEvent.onInitMoney(LOTTO_PRICE),
+    private val buyer: Buyer = Buyer(initMoney),
     private val _winningLotto: WinningLotto? = null,
 ) {
     val winningLotto get() = requireWinningLotto()
     val lottoTickets get() = buyer.lottoTickets
+    val usedMoney get() = calculateUseMoney()
 
-    private fun requireWinningLotto() = checkNotNull(_winningLotto) { "당첨 번호가 초기화 되지 않았습니다." }
+    private fun calculateUseMoney() = initMoney.value - buyer.money.value
+
+    private fun requireWinningLotto() = checkNotNull(_winningLotto) { VALIDATE_WINNING_INIT_MESSAGE }
 
     fun initWinning(): LottoSession {
-        val winningNumbers = lottoEvent.onWinningNumbers()
-        val bonusNumber = lottoEvent.onBonusNumber(winningNumbers)
-        val currentLottoSession = LottoSession(lottoEvent, payMoney, buyer, WinningLotto(winningNumbers, bonusNumber))
+        val currentLottoSession = LottoSession(lottoEvent, initMoney, buyer, generateWinningLotto())
         currentLottoSession.validateInitWinning()
         return currentLottoSession
     }
 
+    private fun generateWinningLotto(): WinningLotto {
+        val winningNumbers = lottoEvent.onWinningNumbers()
+        val bonusNumber = lottoEvent.onBonusNumber(winningNumbers)
+        return WinningLotto(winningNumbers, bonusNumber)
+    }
+
     private fun validateInitWinning() {
-        check(isWinningReady()) { "당첨 번호가 초기화 되지 않았습니다." }
+        check(isWinningReady()) { VALIDATE_WINNING_INIT_MESSAGE }
     }
 
     fun isWinningReady(): Boolean = _winningLotto != null
@@ -47,13 +54,21 @@ class LottoSession(
         }
     }
 
-    fun purchase(
-        count: Int,
-        lottoMachine: LottoMachine,
-    ): LottoSession {
+    fun purchaseManual(count: Int): LottoSession {
+        val lottoMachine = lottoEvent.onManualLottoMachine(count)
         return LottoSession(
             lottoEvent,
-            payMoney,
+            initMoney,
+            generatePurchasedBuyer(count, lottoMachine),
+            _winningLotto,
+        )
+    }
+
+    fun purchaseRandom(count: Int): LottoSession {
+        val lottoMachine = lottoEvent.onRandomLottoMachine(count)
+        return LottoSession(
+            lottoEvent,
+            initMoney,
             generatePurchasedBuyer(count, lottoMachine),
             _winningLotto,
         )
@@ -66,5 +81,6 @@ class LottoSession(
 
     companion object {
         private const val LOTTO_PRICE = 1000
+        private const val VALIDATE_WINNING_INIT_MESSAGE = "당첨 번호가 초기화 되지 않았습니다."
     }
 }
