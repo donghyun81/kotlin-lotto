@@ -1,5 +1,7 @@
-import ui.LottoController
+import ui.mapper.error.ConsoleErrorMessage
+import ui.mapper.error.KoreanErrorMessage
 
 fun main() {
-    LottoController().run()
+    val koreanApp = AppConfig(KoreanErrorMessage(), ConsoleErrorMessage())
+    koreanApp.createConsoleMain().run()
 }
