@@ -15,12 +15,14 @@ class LottoService(
         winningLotto: WinningLotto,
     ): LottoRanks = lottosRanking.ranks(lottoTickets, winningLotto)
 
-    fun prize(
-        lottoTickets: List<LottoTicket>,
-        winningLotto: WinningLotto,
-    ) = lottosRanking.ranks(lottoTickets, winningLotto).totalPrize()
+    fun prize(lottoRanks: LottoRanks) = lottoRanks.totalPrize()
 
     fun yield(
+        totalPrize: BigDecimal,
+        payMoney: Int,
+    ): BigDecimal = calculateYieldRate(totalPrize, payMoney)
+
+    private fun calculateYieldRate(
         totalPrize: BigDecimal,
         payMoney: Int,
     ): BigDecimal = totalPrize.divide(payMoney.toBigDecimal(), 2, RoundingMode.HALF_UP)

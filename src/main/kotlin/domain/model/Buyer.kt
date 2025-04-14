@@ -15,5 +15,5 @@ class Buyer(
 
     fun purchasableCount(price: Int) = money.purchasableCount(price)
 
-    fun purchasable(totalPrice: Int): Boolean = money.purchasable(totalPrice)
+    fun purchasable(price: Int): Boolean = money.purchasable(price)
 }
