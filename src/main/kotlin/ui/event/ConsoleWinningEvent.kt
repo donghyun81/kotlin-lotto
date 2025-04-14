@@ -1,27 +1,18 @@
 package ui.event
 
-import domain.event.LottoEvent
+import domain.event.WinningEvent
 import domain.exception.LottoException
-import domain.exception.MoneyException
 import domain.model.LottoNumber
 import domain.model.LottoNumbers
-import domain.model.Money
 import ui.util.Retry
 import ui.view.InputView
 import ui.view.OutputView
 
-class ConsoleLottoEvent(
+class ConsoleWinningEvent(
     private val inputView: InputView,
     private val outputView: OutputView,
     private val retry: Retry,
-) : LottoEvent {
-    override fun onInitMoney(minMoney: Int): Money =
-        retry.retryEvent {
-            val purchaseAmount = inputView.readPurchaseAmount() ?: return@retryEvent null
-            if (purchaseAmount < minMoney) throw MoneyException.InvalidInitMoneyException(minMoney)
-            Money(purchaseAmount)
-        }
-
+) : WinningEvent {
     override fun onWinningNumbers(): LottoNumbers {
         outputView.printWinningNumbers()
         val lottoNumbers =

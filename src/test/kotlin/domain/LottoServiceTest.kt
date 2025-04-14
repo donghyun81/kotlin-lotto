@@ -47,7 +47,7 @@ class LottoServiceTest {
 
     @Test
     fun `총 상금을 계산할 수 있다`() {
-        val total = service.prize(tickets, winningLotto)
+        val total = service.ranks(tickets, winningLotto).totalPrize()
         val expected =
             LottoRank.FIRST.prize.toBigDecimal() +
                 LottoRank.SECOND.prize.toBigDecimal() +

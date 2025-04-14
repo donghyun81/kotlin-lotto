@@ -1,13 +1,6 @@
 package domain.event
 
-import domain.model.LottoNumber
-import domain.model.LottoNumbers
-import domain.model.Money
-
-interface LottoEvent {
-    fun onInitMoney(minMoney: Int): Money
-
-    fun onWinningNumbers(): LottoNumbers
-
-    fun onBonusNumber(lottoNumbers: LottoNumbers): LottoNumber
-}
+class LottoEvent(
+    private val purchaseEvent: PurchaseEvent,
+    private val winningEvent: WinningEvent,
+) : PurchaseEvent by purchaseEvent, WinningEvent by winningEvent

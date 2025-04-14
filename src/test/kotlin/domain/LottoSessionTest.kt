@@ -1,7 +1,8 @@
 package domain
 
-import domain.fake.FakeLottoEvent
-import domain.fake.FakeLottoMachine
+import domain.event.LottoEvent
+import domain.fake.FakePurchaseEvent
+import domain.fake.FakeWinningEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -12,7 +13,7 @@ class LottoSessionTest {
 
     @BeforeEach
     fun setUp() {
-        session = LottoSession(FakeLottoEvent(5000))
+        session = LottoSession(LottoEvent(FakePurchaseEvent(), FakeWinningEvent()))
     }
 
     @Test
@@ -22,28 +23,28 @@ class LottoSessionTest {
 
     @Test
     fun `로또 구매 시 티켓이 저장된다`() {
-        session.purchase(2, FakeLottoMachine(), FakeLottoEvent(2000))
-        assertThat(session.lottoTickets()).hasSize(2)
+        session = session.purchaseRandom(1)
+        assertThat(session.lottoTickets).hasSize(1)
     }
 
     @Test
     fun `당첨 번호 초기화 이후 준비 완료 상태가 된다`() {
         assertThat(session.isWinningReady()).isFalse()
-        session.initWinning(FakeLottoEvent(5000))
+        session = session.initWinning()
         assertThat(session.isWinningReady()).isTrue()
     }
 
     @Test
     fun `당첨 번호가 초기화되지 않았을 경우 예외 발생`() {
-        assertThatThrownBy { session.winningLotto() }
+        assertThatThrownBy { session.winningLotto }
             .isInstanceOf(IllegalStateException::class.java)
-            .hasMessageContaining("초기화되었는지 확인하고 사용")
+            .hasMessageContaining("당첨 번호가 초기화 되지 않았습니다.")
     }
 
     @Test
     fun `당첨 번호가 초기화된 경우 정상 반환`() {
-        session.initWinning(FakeLottoEvent(5000))
-        val winning = session.winningLotto()
+        session = session.initWinning()
+        val winning = session.winningLotto
         assertThat(winning).isNotNull()
     }
 }
