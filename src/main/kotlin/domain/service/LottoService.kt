@@ -1,0 +1,29 @@
+package domain.service
+
+import domain.model.LottoRanks
+import domain.model.LottoTicket
+import domain.model.LottosRanking
+import domain.model.WinningLotto
+import java.math.BigDecimal
+import java.math.RoundingMode
+
+class LottoService(
+    private val lottosRanking: LottosRanking = LottosRanking(),
+) {
+    fun ranks(
+        lottoTickets: List<LottoTicket>,
+        winningLotto: WinningLotto,
+    ): LottoRanks = lottosRanking.ranks(lottoTickets, winningLotto)
+
+    fun prize(lottoRanks: LottoRanks) = lottoRanks.totalPrize()
+
+    fun yield(
+        totalPrize: BigDecimal,
+        payMoney: Int,
+    ): BigDecimal = calculateYieldRate(totalPrize, payMoney)
+
+    private fun calculateYieldRate(
+        totalPrize: BigDecimal,
+        payMoney: Int,
+    ): BigDecimal = totalPrize.divide(payMoney.toBigDecimal(), 2, RoundingMode.HALF_UP)
+}
